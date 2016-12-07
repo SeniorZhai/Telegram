@@ -35,30 +35,33 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import org.telegram.messenger.AndroidUtilities;
 import org.telegram.PhoneFormat.PhoneFormat;
+import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ContactsController;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.ImageLoader;
+import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NativeCrashManager;
-import org.telegram.messenger.SendMessagesHelper;
-import org.telegram.messenger.UserObject;
-import org.telegram.messenger.Utilities;
-import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.FileLog;
-import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
+import org.telegram.messenger.SendMessagesHelper;
+import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.UserObject;
+import org.telegram.messenger.Utilities;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.messenger.camera.CameraController;
 import org.telegram.messenger.query.DraftQuery;
@@ -67,12 +70,12 @@ import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
-import org.telegram.messenger.UserConfig;
-import org.telegram.ui.ActionBar.AlertDialog;
-import org.telegram.ui.Adapters.DrawerLayoutAdapter;
 import org.telegram.ui.ActionBar.ActionBarLayout;
+import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.DrawerLayoutContainer;
+import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.Adapters.DrawerLayoutAdapter;
 import org.telegram.ui.Cells.LanguageCell;
 import org.telegram.ui.Components.EmbedBottomSheet;
 import org.telegram.ui.Components.JoinGroupAlert;
@@ -81,7 +84,6 @@ import org.telegram.ui.Components.PasscodeView;
 import org.telegram.ui.Components.PipRoundVideoView;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.StickersAlert;
-import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.ThemeEditorView;
 
 import java.io.BufferedReader;
@@ -137,9 +139,9 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ApplicationLoader.postInitApplication();
-        NativeCrashManager.handleDumpFiles(this);
+        NativeCrashManager.handleDumpFiles(this); // 上传LOG文件
         AndroidUtilities.checkDisplaySize(this, getResources().getConfiguration());
-
+        // 用户是否登录
         if (!UserConfig.isClientActivated()) {
             Intent intent = getIntent();
             if (intent != null && intent.getAction() != null && (Intent.ACTION_SEND.equals(intent.getAction()) || intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE))) {
@@ -182,11 +184,13 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
         if (Build.VERSION.SDK_INT >= 24) {
             AndroidUtilities.isInMultiwindow = isInMultiWindowMode();
         }
+        // 加载资源
         Theme.createChatResources(this, false);
+
         if (UserConfig.passcodeHash.length() != 0 && UserConfig.appLocked) {
             UserConfig.lastPauseTime = ConnectionsManager.getInstance().getCurrentTime();
         }
-
+        // 状态栏高度
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             AndroidUtilities.statusBarHeight = getResources().getDimensionPixelSize(resourceId);
@@ -243,13 +247,15 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
                 protected void onLayout(boolean changed, int l, int t, int r, int b) {
                     int width = r - l;
                     int height = b - t;
-
+                    // 不在多窗口模式且（横屏||大平板）
                     if (!AndroidUtilities.isInMultiwindow && (!AndroidUtilities.isSmallTablet() || getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)) {
                         int leftWidth = width / 100 * 35;
                         if (leftWidth < AndroidUtilities.dp(320)) {
                             leftWidth = AndroidUtilities.dp(320);
                         }
+                        // 阴影
                         shadowTabletSide.layout(leftWidth, 0, leftWidth + shadowTabletSide.getMeasuredWidth(), shadowTabletSide.getMeasuredHeight());
+                        // actionbar
                         actionBarLayout.layout(0, 0, actionBarLayout.getMeasuredWidth(), actionBarLayout.getMeasuredHeight());
                         rightActionBarLayout.layout(leftWidth, 0, leftWidth + rightActionBarLayout.getMeasuredWidth(), rightActionBarLayout.getMeasuredHeight());
                     } else {
@@ -333,13 +339,14 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
         } else {
             drawerLayoutContainer.addView(actionBarLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
-
+        // 右侧Recycler
         sideMenu = new RecyclerListView(this);
         sideMenu.setBackgroundColor(Theme.getColor(Theme.key_chats_menuBackground));
         sideMenu.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         sideMenu.setAdapter(drawerLayoutAdapter = new DrawerLayoutAdapter(this));
         drawerLayoutContainer.setDrawerLayout(sideMenu);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) sideMenu.getLayoutParams();
+
         Point screenSize = AndroidUtilities.getRealScreenSize();
         layoutParams.width = AndroidUtilities.isTablet() ? AndroidUtilities.dp(320) : Math.min(AndroidUtilities.dp(320), Math.min(screenSize.x, screenSize.y) - AndroidUtilities.dp(56));
         layoutParams.height = LayoutHelper.MATCH_PARENT;

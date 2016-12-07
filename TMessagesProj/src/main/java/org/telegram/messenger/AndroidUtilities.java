@@ -528,6 +528,7 @@ public class AndroidUtilities {
         return density * value;
     }
 
+    // 初始化参数
     public static void checkDisplaySize(Context context, Configuration newConfiguration) {
         try {
             density = context.getResources().getDisplayMetrics().density;

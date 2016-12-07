@@ -30,7 +30,7 @@ public class NativeLoader {
     private String crashPath = "";
 
     private static volatile boolean nativeLoaded = false;
-
+    // 获取应用的/lib路径
     private static File getNativeLibraryDir(Context context) {
         File f = null;
         if (context != null) {
@@ -114,7 +114,7 @@ public class NativeLoader {
         if (nativeLoaded) {
             return;
         }
-
+        // 初始化hockey
         Constants.loadFromContext(context);
 
         try {
@@ -136,22 +136,23 @@ public class NativeLoader {
                 FileLog.e(e);
                 folder = "armeabi";
             }
-
+            // 获取操作系统位数
             String javaArch = System.getProperty("os.arch");
             if (javaArch != null && javaArch.contains("686")) {
                 folder = "x86";
             }
 
-
+            // /lib路径
             File destFile = getNativeLibraryDir(context);
             if (destFile != null) {
+                // .so文件
                 destFile = new File(destFile, LIB_SO_NAME);
                 if (destFile.exists()) {
                     FileLog.d("load normal lib");
                     try {
-                        System.loadLibrary(LIB_NAME);
-                        init(Constants.FILES_PATH, BuildVars.DEBUG_VERSION);
-                        nativeLoaded = true;
+                        System.loadLibrary(LIB_NAME); // load library
+                        init(Constants.FILES_PATH, BuildVars.DEBUG_VERSION);// 暂时无用
+                        nativeLoaded = true; // 设置标志位
                         return;
                     } catch (Error e) {
                         FileLog.e(e);

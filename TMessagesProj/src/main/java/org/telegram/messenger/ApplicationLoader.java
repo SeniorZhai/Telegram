@@ -21,6 +21,8 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -134,7 +136,7 @@ public class ApplicationLoader extends Application {
         }
 
         try {
-            PowerManager pm = (PowerManager)ApplicationLoader.applicationContext.getSystemService(Context.POWER_SERVICE);
+            PowerManager pm = (PowerManager) ApplicationLoader.applicationContext.getSystemService(Context.POWER_SERVICE);
             isScreenOn = pm.isScreenOn();
             FileLog.e("screen state = " + isScreenOn);
         } catch (Exception e) {
@@ -188,7 +190,7 @@ public class ApplicationLoader extends Application {
             SendMessagesHelper.getInstance().checkUnsentMessages();
         }
 
-        ApplicationLoader app = (ApplicationLoader)ApplicationLoader.applicationContext;
+        ApplicationLoader app = (ApplicationLoader) ApplicationLoader.applicationContext;
         app.initPlayServices();
         FileLog.e("app initied");
 
@@ -199,11 +201,12 @@ public class ApplicationLoader extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        // 获取Context
         applicationContext = getApplicationContext();
+
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
         ConnectionsManager.native_setJava(Build.VERSION.SDK_INT == 14 || Build.VERSION.SDK_INT == 15);
-        new ForegroundDetector(this);
+        new ForegroundDetector(this); // Application 生命周期监听
 
         applicationHandler = new Handler(applicationContext.getMainLooper());
 
@@ -243,7 +246,7 @@ public class ApplicationLoader extends Application {
         applicationContext.stopService(new Intent(applicationContext, NotificationsService.class));
 
         PendingIntent pintent = PendingIntent.getService(applicationContext, 0, new Intent(applicationContext, NotificationsService.class), 0);
-        AlarmManager alarm = (AlarmManager)applicationContext.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarm = (AlarmManager) applicationContext.getSystemService(Context.ALARM_SERVICE);
         alarm.cancel(pintent);
     }
 
