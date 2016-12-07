@@ -20,8 +20,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -294,11 +292,12 @@ public class ApplicationLoader extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        // 获取Context
         applicationContext = getApplicationContext();
+
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
         ConnectionsManager.native_setJava(Build.VERSION.SDK_INT == 14 || Build.VERSION.SDK_INT == 15);
-        new ForegroundDetector(this);
+        new ForegroundDetector(this); // Application 生命周期监听
 
         applicationHandler = new Handler(applicationContext.getMainLooper());
 
