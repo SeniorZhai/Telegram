@@ -15,8 +15,9 @@ public class BuildVars {
 
     public static boolean DEBUG_VERSION = false;
     public static boolean DEBUG_PRIVATE_VERSION = false;
-    public static int BUILD_VERSION = 1340;
-    public static String BUILD_VERSION_STRING = "4.9.0";
+
+    public static int BUILD_VERSION = 1358;
+    public static String BUILD_VERSION_STRING = "4.9.1";
     public static boolean LOGS_ENABLED = false;
     public static boolean CHECK_UPDATES = false;
 
@@ -27,6 +28,7 @@ public class BuildVars {
     public static String GCM_SENDER_ID = "AIzaSyBQguoECW_fF2DU8OL_zSVsA5binSJEK30";
     public static String SEND_LOGS_EMAIL = "developer.zhaitao@gmail.com";
     public static String FOURSQUARE_API_VERSION = "20150326";
+    public static String PLAYSTORE_APP_URL = "";
 
     static {
         if (ApplicationLoader.applicationContext != null) {
