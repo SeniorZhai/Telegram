@@ -117,7 +117,7 @@ public class SharedAudioCell extends FrameLayout implements DownloadController.F
         currentMessageObject = messageObject;
         TLRPC.Document document = messageObject.getDocument();
 
-        TLRPC.PhotoSize thumb = document != null ? FileLoader.getClosestPhotoSizeWithSize(document.thumbs, 90) : null;
+        TLRPC.PhotoSize thumb = document != null ? FileLoader.getClosestPhotoSizeWithSize(document.thumbs, 240) : null;
         if (thumb instanceof TLRPC.TL_photoSize) {
             radialProgress.setImageOverlay(thumb, document, messageObject);
         } else {
@@ -450,7 +450,7 @@ public class SharedAudioCell extends FrameLayout implements DownloadController.F
         super.onInitializeAccessibilityNodeInfo(info);
         if (currentMessageObject.isMusic()) {
             info.setText(LocaleController.formatString("AccDescrMusicInfo", R.string.AccDescrMusicInfo, currentMessageObject.getMusicAuthor(), currentMessageObject.getMusicTitle()));
-        } else { // voice message
+        } else if (titleLayout != null && descriptionLayout != null) {
             info.setText(titleLayout.getText() + ", " + descriptionLayout.getText());
         }
         if (checkBox.isChecked()) {

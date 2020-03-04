@@ -2046,7 +2046,7 @@ public class MessagesStorage extends BaseController {
     }
 
     public void putDialogPhotos(final int did, final TLRPC.photos_Photos photos) {
-        if (photos == null || photos.photos.isEmpty()) {
+        if (photos == null) {
             return;
         }
         storageQueue.postRunnable(() -> {
@@ -7390,6 +7390,13 @@ public class MessagesStorage extends BaseController {
                             state_media.bindInteger(4, MediaDataController.getMediaType(message));
                             state_media.bindByteBuffer(5, data);
                             state_media.step();
+                        } else if (message instanceof TLRPC.TL_messageService && message.action instanceof TLRPC.TL_messageActionHistoryClear) {
+                            try {
+                                database.executeFast(String.format(Locale.US, "DELETE FROM media_v2 WHERE mid = %d", message.id)).stepThis().dispose();
+                                database.executeFast("DELETE FROM media_counts_v2 WHERE uid = " + dialog_id).stepThis().dispose();
+                            } catch (Exception e2) {
+                                FileLog.e(e2);
+                            }
                         }
                         data.reuse();
 
@@ -8146,6 +8153,33 @@ public class MessagesStorage extends BaseController {
                 FileLog.e(e);
             }
         });
+    }
+
+    public int getDialogMaxMessageId(final long dialog_id) {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final Integer[] max = new Integer[]{0};
+        storageQueue.postRunnable(() -> {
+            SQLiteCursor cursor = null;
+            try {
+                cursor = database.queryFinalized("SELECT MAX(mid) FROM messages WHERE uid = " + dialog_id);
+                if (cursor.next()) {
+                    max[0] = cursor.intValue(0);
+                }
+            } catch (Exception e) {
+                FileLog.e(e);
+            } finally {
+                if (cursor != null) {
+                    cursor.dispose();
+                }
+            }
+            countDownLatch.countDown();
+        });
+        try {
+            countDownLatch.await();
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        return max[0];
     }
 
     public int getDialogReadMax(final boolean outbox, final long dialog_id) {
