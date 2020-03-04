@@ -37,7 +37,7 @@ dependencies {
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '29.0.2'
+    buildToolsVersion '29.0.3'
     ndkVersion "20.1.5948944"
 
     defaultConfig.applicationId = "org.telegram.messenger"
@@ -180,14 +180,7 @@ android {
                 abiVersionCode = 1
             }
         }
-        x86 {
-            ndk {
-                abiFilters "x86"
-            }
-            ext {
-                abiVersionCode = 2
-            }
-        }
+        
         armv7_SDK23 {
             ndk {
                 abiFilters "armeabi-v7a"
@@ -203,21 +196,6 @@ android {
                 abiVersionCode = 3
             }
         }
-        x86_SDK23 {
-            ndk {
-                abiFilters "x86"
-            }
-            sourceSets.debug {
-                manifest.srcFile 'config/debug/AndroidManifest_SDK23.xml'
-            }
-            sourceSets.release {
-                manifest.srcFile 'config/release/AndroidManifest_SDK23.xml'
-            }
-            minSdkVersion 23
-            ext {
-                abiVersionCode = 4
-            }
-        }
         arm64 {
             ndk {
                 abiFilters "arm64-v8a"
@@ -226,14 +204,7 @@ android {
                 abiVersionCode = 5
             }
         }
-        x64 {
-            ndk {
-                abiFilters "x86_64"
-            }
-            ext {
-                abiVersionCode = 6
-            }
-        }
+
         arm64_SDK23 {
             ndk {
                 abiFilters "arm64-v8a"
@@ -252,21 +223,7 @@ android {
                 abiVersionCode = 7
             }
         }
-        x64_SDK23 {
-            ndk {
-                abiFilters "x86_64"
-            }
-            sourceSets.debug {
-                manifest.srcFile 'config/debug/AndroidManifest_SDK23.xml'
-            }
-            sourceSets.release {
-                manifest.srcFile 'config/release/AndroidManifest_SDK23.xml'
-            }
-            minSdkVersion 23
-            ext {
-                abiVersionCode = 8
-            }
-        }
+
         afat {
             sourceSets.debug {
                 manifest.srcFile 'config/debug/AndroidManifest_SDK23.xml'
@@ -325,7 +282,7 @@ android {
         externalNativeBuild {
             ndkBuild {
                 arguments "NDK_APPLICATION_MK:=jni/Application.mk", "APP_PLATFORM:=android-16", "--jobs=8"
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+                abiFilters "armeabi-v7a", "arm64-v8a"
             }
         }
 
