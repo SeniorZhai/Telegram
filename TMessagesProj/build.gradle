@@ -42,7 +42,7 @@ dependencies {
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
-    ndkVersion "21.1.6352462"
+    ndkVersion "20.1.5948944"
 
     defaultConfig.applicationId = "org.telegram.messenger"
 
@@ -246,7 +246,7 @@ android {
             output.getProcessManifestProvider().get().doLast {
                 def abiVersion = variant.productFlavors.get(0).abiVersionCode
 
-                def outputDir = manifestOutputDirectory
+                def outputDir = file("src/main")
                 File directory
                 if (outputDir instanceof File) {
                     directory = outputDir
