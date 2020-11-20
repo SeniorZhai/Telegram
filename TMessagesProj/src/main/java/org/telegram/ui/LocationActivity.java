@@ -34,14 +34,12 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.*;
 import android.view.animation.OvershootInterpolator;
-<<<<<<< HEAD
 import android.widget.*;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
-=======
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -81,17 +79,14 @@ import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.NotificationCenter;
->>>>>>> 5a47056c7b1cb0b7d095ca6e7d1a288c01f8f160
 import org.telegram.messenger.R;
 import org.telegram.messenger.*;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.*;
 import org.telegram.ui.Adapters.LocationActivityAdapter;
 import org.telegram.ui.Adapters.LocationActivitySearchAdapter;
-<<<<<<< HEAD
 import org.telegram.ui.Cells.*;
 import org.telegram.ui.Components.*;
-=======
 import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.LocationCell;
 import org.telegram.ui.Cells.LocationDirectionCell;
@@ -113,7 +108,6 @@ import org.telegram.ui.Components.MapPlaceholderDrawable;
 import org.telegram.ui.Components.ProximitySheet;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.UndoView;
->>>>>>> 5a47056c7b1cb0b7d095ca6e7d1a288c01f8f160
 
 import java.io.File;
 import java.util.ArrayList;
